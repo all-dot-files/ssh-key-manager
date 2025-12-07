@@ -1,0 +1,41 @@
+{{define "title"}}Audit Log - SKM Server{{end}}
+{{define "page_title"}}Audit Log{{end}}
+
+{{define "content"}}
+<div class="card">
+    <div class="card-header">
+        <h2>Recent Activity</h2>
+    </div>
+
+    <div class="table-responsive">
+        {{if .AuditLogs}}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Details</th>
+                    <th>Time</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .AuditLogs}}
+                <tr>
+                    <td><span class="badge">{{.Action}}</span></td>
+                    <td>{{.Details}}</td>
+                    <td class="date-format" data-date="{{.CreatedAt}}">{{.CreatedAt}}</td>
+                    <td>{{.IPAddress}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        {{else}}
+        <div class="empty-state">
+            <i class="fa-solid fa-list-check"></i>
+            <h3>No activity recorded</h3>
+            <p>Audit logs will appear here once you start using the system.</p>
+        </div>
+        {{end}}
+    </div>
+</div>
+{{end}}

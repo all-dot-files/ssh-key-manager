@@ -1,0 +1,52 @@
+{{define "title"}}Dashboard - SKM Server{{end}}
+{{define "page_title"}}Dashboard{{end}}
+
+{{define "content"}}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fa-solid fa-key"></i>
+        </div>
+        <div class="stat-content">
+            <h3>Public Keys</h3>
+            <div class="stat-value">{{.KeyCount}}</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fa-solid fa-laptop"></i>
+        </div>
+        <div class="stat-content">
+            <h3>Devices</h3>
+            <div class="stat-value">{{.DeviceCount}}</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <div class="stat-content">
+            <h3>Account Status</h3>
+            <div class="stat-value" style="font-size: 1rem; color: var(--success-color);">
+                <i class="fa-solid fa-check-circle"></i> Active
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fa-solid fa-bolt"></i> Quick Actions</h2>
+    </div>
+    <div style="padding: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="/keys" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> Manage Keys
+        </a>
+        <a href="/devices" class="btn btn-primary" style="background-color: var(--secondary-color);">
+            <i class="fa-solid fa-desktop"></i> View Devices
+        </a>
+    </div>
+</div>
+{{end}}

@@ -1,0 +1,48 @@
+{{define "title"}}Register - SKM Server{{end}}
+
+{{define "content"}}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Create Account</h1>
+            <p>Get started with SKM Server</p>
+        </div>
+
+        {{if .Error}}
+        <div class="alert alert-error">
+            <i class="fa-solid fa-circle-exclamation"></i> {{.Error}}
+        </div>
+        {{end}}
+
+        <form id="registerForm" method="POST" action="/register">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" required autofocus
+                    placeholder="Choose a username">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" required
+                    placeholder="Enter your email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required
+                    placeholder="Choose a strong password">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="fa-solid fa-user-plus"></i> Create Account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>
+                Already have an account? <a href="/login">Sign in</a>
+            </p>
+        </div>
+    </div>
+</div>
+{{end}}

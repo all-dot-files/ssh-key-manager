@@ -1,0 +1,55 @@
+{{define "title"}}Login - SKM Server{{end}}
+
+{{define "content"}}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to manage your SSH keys</p>
+        </div>
+
+        {{if .Error}}
+        <div class="alert alert-error">
+            <i class="fa-solid fa-circle-exclamation"></i> {{.Error}}
+        </div>
+        {{end}}
+
+        <form id="loginForm" method="POST" action="/login">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" required autofocus
+                    placeholder="Enter your username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required
+                    placeholder="Enter your password">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="fa-solid fa-right-to-bracket"></i> Sign In
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>
+                Don't have an account? <a href="/register">Create account</a>
+            </p>
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{define "scripts"}}
+<script>
+    // The original login logic with fetch is good, let's keep it but adapted
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        // We'll let the form submit normally for now as the server handles the redirect
+        // But we can add some UI feedback
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+    });
+</script>
+{{end}}

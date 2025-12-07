@@ -1,0 +1,26 @@
+{{define "title"}}Welcome - SKM Server{{end}}
+
+{{define "content"}}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>🔐 SKM Server</h1>
+            <p>Secure SSH Key Management</p>
+        </div>
+
+        <div class="auth-footer">
+            <p>Redirecting to login...</p>
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{define "scripts"}}
+<script>
+    // Auto redirect based on auth status
+    // This logic is now handled by the server, but as a fallback:
+    setTimeout(() => {
+        window.location.href = '/login';
+    }, 1000);
+</script>
+{{end}}

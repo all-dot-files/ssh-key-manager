@@ -1,0 +1,81 @@
+{{define "title"}}Devices - SKM Server{{end}}
+{{define "page_title"}}Connected Devices{{end}}
+
+{{define "content"}}
+<div class="card">
+    <div class="card-header">
+        <h2>Registered Devices</h2>
+        <span class="badge badge-success">{{len .Devices}} Devices</span>
+    </div>
+
+    <div class="table-responsive">
+        {{if .Devices}}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>OS</th>
+                    <th>Hostname</th>
+                    <th>Last Seen</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Devices}}
+                <tr>
+                    <td>
+                        <div style="font-weight: 500;">{{.Name}}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">{{.ID}}</div>
+                    </td>
+                    <td>
+                        <i class="fa-brands fa-{{if eq .OS " darwin"}}apple{{else if eq .OS "linux"
+                            }}linux{{else}}windows{{end}}"></i>
+                        {{.OS}}
+                    </td>
+                    <td>{{.Hostname}}</td>
+                    <td class="date-format" data-date="{{.LastSeenAt}}">{{.LastSeenAt}}</td>
+                    <td>
+                        <button class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;"
+                            onclick="revokeDevice('{{.ID}}')">
+                            <i class="fa-solid fa-ban"></i> Revoke
+                        </button>
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        {{else}}
+        <div class="empty-state">
+            <i class="fa-solid fa-laptop"></i>
+            <h3>No devices found</h3>
+            <p>Register a device using the SKM CLI tool.</p>
+        </div>
+        {{end}}
+    </div>
+</div>
+
+<script>
+    async function revokeDevice(id) {
+        if (!confirm('Are you sure you want to revoke this device? This action cannot be undone.')) return;
+
+        try {
+            const response = await fetch(`/api/v1/devices/${id}/revoke`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+                }
+            });
+
+            if (response.ok) {
+                App.showToast('Device revoked successfully');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                App.showToast('Failed to revoke device', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            App.showToast('Network error', 'error');
+        }
+    }
+</script>
+{{end}}

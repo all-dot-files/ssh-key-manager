@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  skm-server:
+    build: .
+    image: skm-server:latest
+    container_name: skm-server
+    ports:
+      - "8080:8080"
+    environment:
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+    volumes:
+      - skm-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  skm-data:
+    driver: local

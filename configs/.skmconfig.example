@@ -1,0 +1,64 @@
+# SKM Project Configuration Example
+#
+# This file should be placed at the root of your project as .skmconfig
+# It can be committed to version control to share SSH configuration with your team.
+#
+# Project-level settings override global SKM configuration.
+
+# Project identification
+project_name: my-awesome-project
+team_name: engineering
+
+# Override user information for this project
+# user: "Project User"
+# email: "project@example.com"
+
+# Default SSH key for this project
+# This key will be used for hosts and Git operations in this project
+default_key: work
+
+# Git-specific overrides (for commits in this project)
+git_user: "John Doe"
+git_email: "john.doe@company.com"
+
+# Override key policy for this project
+# Options: auto, ask, never
+default_key_policy: auto
+
+# Auto-creation settings
+auto_create_host: true
+auto_create_key: false
+key_type: ed25519
+
+# Debug mode override (uncomment to enable)
+# debug: true
+
+# Project-specific SSH hosts
+hosts:
+  - host: production-server
+    user: deploy
+    key: production
+    port: 22
+    hostname: prod.example.com
+    tags:
+      - production
+      - web
+
+  - host: staging-server
+    user: deploy
+    key: staging
+    port: 22
+    hostname: staging.example.com
+    tags:
+      - staging
+      - web
+
+  - host: database-server
+    user: dbadmin
+    key: work
+    port: 2222
+    hostname: db.internal.company.com
+    tags:
+      - database
+      - internal
+

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{block "title" .}}SKM Server{{end}}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {{block "head" .}}{{end}}
+</head>
+<body>
+    <div class="app-container">
+        {{if .User}}
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-key"></i>
+                    <span>SKM Server</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="/dashboard" class="{{if eq .ActivePage "dashboard"}}active{{end}}">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/keys" class="{{if eq .ActivePage "keys"}}active{{end}}">
+                            <i class="fa-solid fa-key"></i>
+                            <span>Keys</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/devices" class="{{if eq .ActivePage "devices"}}active{{end}}">
+                            <i class="fa-solid fa-laptop"></i>
+                            <span>Devices</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/audit" class="{{if eq .ActivePage "audit"}}active{{end}}">
+                            <i class="fa-solid fa-list-check"></i>
+                            <span>Audit Log</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/settings" class="{{if eq .ActivePage "settings"}}active{{end}}">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="avatar">
+                        <span>{{.User.Username | slice 0 1 | printf "%s" | upper}}</span>
+                    </div>
+                    <div class="details">
+                        <span class="username">{{.User.Username}}</span>
+                        <span class="role">User</span>
+                    </div>
+                </div>
+                <a href="/logout" class="logout-btn" title="Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+            </div>
+        </aside>
+        {{end}}
+
+        <main class="main-content {{if not .User}}full-width{{end}}">
+            {{if .User}}
+            <header class="top-bar">
+                <h1 class="page-title">{{block "page_title" .}}{{end}}</h1>
+                <div class="top-bar-actions">
+                    <!-- Add global actions here if needed -->
+                </div>
+            </header>
+            {{end}}
+
+            <div class="content-wrapper">
+                {{block "content" .}}{{end}}
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+    {{block "scripts" .}}{{end}}
+</body>
+</html>

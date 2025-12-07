@@ -1,0 +1,58 @@
+{{define "title"}}Keys - SKM Server{{end}}
+{{define "page_title"}}SSH Keys{{end}}
+
+{{define "content"}}
+<div class="card">
+    <div class="card-header">
+        <h2>Public Keys</h2>
+        <span class="badge badge-success">{{len .Keys}} Keys</span>
+    </div>
+
+    <div class="table-responsive">
+        {{if .Keys}}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fingerprint</th>
+                    <th>Type</th>
+                    <th>Added</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Keys}}
+                <tr>
+                    <td>
+                        <div style="font-family: monospace; font-size: 0.875rem;">{{.Fingerprint}}</div>
+                    </td>
+                    <td><span class="badge">{{.Type}}</span></td>
+                    <td class="date-format" data-date="{{.CreatedAt}}">{{.CreatedAt}}</td>
+                    <td>
+                        <button class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;"
+                            onclick="deleteKey('{{.Fingerprint}}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        {{else}}
+        <div class="empty-state">
+            <i class="fa-solid fa-key"></i>
+            <h3>No keys found</h3>
+            <p>Sync your keys using the SKM CLI tool.</p>
+        </div>
+        {{end}}
+    </div>
+</div>
+
+<script>
+    function deleteKey(fingerprint) {
+        if (!confirm('Are you sure you want to delete this key?')) return;
+
+        // TODO: Implement delete API
+        App.showToast('Key deletion not implemented yet', 'warning');
+    }
+</script>
+{{end}}
