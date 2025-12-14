@@ -6,9 +6,10 @@ import (
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
-	"github.com/all-dot-files/ssh-key-manager/pkg/errors"
+
 	"github.com/all-dot-files/ssh-key-manager/internal/keystore"
 	"github.com/all-dot-files/ssh-key-manager/internal/models"
+	"github.com/all-dot-files/ssh-key-manager/pkg/errors"
 )
 
 var hostCmd = &cobra.Command{
@@ -152,7 +153,7 @@ var hostListCmd = &cobra.Command{
 				hostname,
 			)
 		}
-		
+
 		w.Flush()
 		return nil
 	},
@@ -166,7 +167,7 @@ var hostRemoveCmd = &cobra.Command{
 		hostname := args[0]
 
 		if err := configManager.RemoveHost(hostname); err != nil {
-			return errors.WrapWithSuggestion(err, errors.ErrNotFound, "HOST", 
+			return errors.WrapWithSuggestion(err, errors.ErrNotFound, "HOST",
 				fmt.Sprintf("host %s not found", hostname),
 				"Run 'skm host list' to see available hosts")
 		}

@@ -7,6 +7,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
+
 	"github.com/all-dot-files/ssh-key-manager/internal/backup"
 )
 
@@ -21,7 +22,7 @@ var backupCreateCmd = &cobra.Command{
 	Short: "Create a new backup",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		msg, _ := cmd.Flags().GetString("message")
-		
+
 		bm, err := backup.NewManager(configManager.GetConfigDir())
 		if err != nil {
 			return err
@@ -73,12 +74,12 @@ var backupRestoreCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		filename := args[0]
-		
+
 		bm, err := backup.NewManager(configManager.GetConfigDir())
 		if err != nil {
 			return err
 		}
-		
+
 		// If plain filename is provided, look in backup dir, else assume absolute path
 		path := filename
 		if filepath.Base(filename) == filename {
@@ -91,7 +92,7 @@ var backupRestoreCmd = &cobra.Command{
 
 		fmt.Printf("⚠️  Warning: This will overwrite your current configuration.\n")
 		fmt.Printf("Restoring from: %s\n", path)
-		
+
 		// Simple confirmation (unless force flag?)
 		// For now, let's just do it or require user to be careful.
 		// Ideally we should ask for confirmation but keeping it simple for now.

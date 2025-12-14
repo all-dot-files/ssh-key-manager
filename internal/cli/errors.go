@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/fatih/color"
+
 	"github.com/all-dot-files/ssh-key-manager/pkg/errors"
 )
 
@@ -22,7 +23,7 @@ func PrintError(err error) {
 	// Check if it's an AppError
 	if appErr, ok := err.(*errors.AppError); ok {
 		fmt.Fprintf(os.Stderr, "%s %s\n", red("Wait!"), appErr.Message)
-		
+
 		if appErr.Suggestion != "" {
 			fmt.Fprintf(os.Stderr, "\n%s %s\n", yellow("Suggestion:"), appErr.Suggestion)
 		}
@@ -38,7 +39,7 @@ func PrintError(err error) {
 	} else {
 		// Generic error
 		fmt.Fprintf(os.Stderr, "%s %s\n", red("Error:"), err.Error())
-		
+
 		if IsDebug() {
 			fmt.Fprintf(os.Stderr, "\n%s %+v\n", dim("Debug:"), err)
 		}

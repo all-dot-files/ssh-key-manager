@@ -5,8 +5,9 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/all-dot-files/ssh-key-manager/internal/models"
 	"gopkg.in/yaml.v3"
+
+	"github.com/all-dot-files/ssh-key-manager/internal/models"
 )
 
 var projectCmd = &cobra.Command{
@@ -284,4 +285,3 @@ func init() {
 	// Merge command
 	projectCmd.AddCommand(projectMergeCmd)
 }
-

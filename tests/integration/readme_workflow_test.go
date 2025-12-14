@@ -1,4 +1,4 @@
-package tests
+package integration
 
 import (
 	"os"
@@ -87,9 +87,9 @@ func TestReadmeQuickstartWorkflow(t *testing.T) {
 
 	sshMgr := sshconfig.NewManager(cfg.SSHDir)
 	keyMap := map[string]*models.Key{workKey.Name: workKey}
-    
-    // Refresh config to get latest hosts
-    cfg = cfgManager.Get()
+
+	// Refresh config to get latest hosts
+	cfg = cfgManager.Get()
 	if err := sshMgr.UpdateConfig(cfg.Hosts, keyMap); err != nil {
 		t.Fatalf("failed to update ssh config: %v", err)
 	}
