@@ -1,9 +1,15 @@
 package cli
 
 import (
+	"bytes"
+	"fmt"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
+
+	"github.com/all-dot-files/ssh-key-manager/internal/shell"
+	"github.com/all-dot-files/ssh-key-manager/pkg/logger"
 )
 
 var completionCmd = &cobra.Command{
@@ -47,15 +53,48 @@ PowerShell:
 	ValidArgs:             []string{"bash", "zsh", "fish", "powershell"},
 	Args:                  cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		outPath, _ := cmd.Flags().GetString("out")
+		clock := shell.NewStopwatch()
+
+		var buf bytes.Buffer
+		out := &buf
+
 		switch args[0] {
 		case "bash":
-			return rootCmd.GenBashCompletion(os.Stdout)
+			if err := rootCmd.GenBashCompletion(out); err != nil {
+				return fmt.Errorf("generate bash completions: %w", err)
+			}
 		case "zsh":
-			return rootCmd.GenZshCompletion(os.Stdout)
+			if err := rootCmd.GenZshCompletion(out); err != nil {
+				return fmt.Errorf("generate zsh completions: %w", err)
+			}
 		case "fish":
-			return rootCmd.GenFishCompletion(os.Stdout, true)
+			if err := rootCmd.GenFishCompletion(out, true); err != nil {
+				return fmt.Errorf("generate fish completions: %w", err)
+			}
 		case "powershell":
-			return rootCmd.GenPowerShellCompletionWithDesc(os.Stdout)
+			if err := rootCmd.GenPowerShellCompletionWithDesc(out); err != nil {
+				return fmt.Errorf("generate powershell completions: %w", err)
+			}
+		}
+
+		if outPath != "" {
+			if err := shell.ValidateWritable(outPath); err != nil {
+				return fmt.Errorf("cannot write completions: %w", err)
+			}
+			if err := os.WriteFile(outPath, buf.Bytes(), 0o644); err != nil {
+				return fmt.Errorf("write completions: %w", err)
+			}
+			fmt.Fprintf(cmd.OutOrStdout(), "✓ Wrote completions to %s\n", outPath)
+		} else {
+			if _, err := cmd.OutOrStdout().Write(buf.Bytes()); err != nil {
+				return fmt.Errorf("stream completions: %w", err)
+			}
+		}
+
+		elapsed := clock.Elapsed()
+		if !clock.WithinBudget(150 * time.Millisecond) {
+			fmt.Fprintf(cmd.ErrOrStderr(), "⚠️  completions generated in %s (over 150ms budget)\n", elapsed)
 		}
 		return nil
 	},
@@ -63,21 +102,15 @@ PowerShell:
 
 func init() {
 	rootCmd.AddCommand(completionCmd)
+	completionCmd.Flags().String("out", "", "Write completions to the given file path (validates writability)")
 }
 
 // Custom completion functions for better autocomplete experience
 
 // ValidKeyNamesFunc returns a function that provides key name completions
 func ValidKeyNamesFunc(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	if configManager == nil {
-		return nil, cobra.ShellCompDirectiveNoFileComp
-	}
-
-	cfg := configManager.Get()
-	var names []string
-	for _, key := range cfg.Keys {
-		names = append(names, key.Name)
-	}
+	provider := newKeyCompletionProvider(configManager, logger.Log)
+	names := provider.Names()
 	return names, cobra.ShellCompDirectiveNoFileComp
 }
 

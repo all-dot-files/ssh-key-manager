@@ -7,6 +7,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
+
 	"github.com/all-dot-files/ssh-key-manager/internal/git"
 	"github.com/all-dot-files/ssh-key-manager/internal/keystore"
 	"github.com/all-dot-files/ssh-key-manager/internal/models"
@@ -375,7 +376,7 @@ var gitHelperSSHCommandCmd = &cobra.Command{
 	},
 }
 
-func uninstallGitHelper(global, local bool, repoPath string) error {
+func uninstallGitHelper(_, local bool, repoPath string) error {
 	gitMgr := git.NewManager(configManager)
 
 	if local {

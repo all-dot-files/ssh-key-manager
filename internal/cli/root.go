@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
 	"github.com/all-dot-files/ssh-key-manager/internal/config"
 	"github.com/all-dot-files/ssh-key-manager/internal/rotation"
 )
@@ -38,6 +39,16 @@ Features:
 // Execute adds all child commands to the root command and sets flags appropriately.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
+		if len(os.Args) > 1 {
+			if suggestions := rootCmd.SuggestionsFor(os.Args[1]); len(suggestions) > 0 {
+				fmt.Fprintf(os.Stderr, "Did you mean:\n")
+				for _, s := range suggestions {
+					fmt.Fprintf(os.Stderr, "  • %s (try: skm help %s)\n", s, s)
+				}
+				fmt.Fprintln(os.Stderr)
+			}
+		}
+		fmt.Fprintln(os.Stderr, "Tip: use \"skm help\" or \"skm completion <shell>\" for guidance.")
 		PrintError(err)
 		os.Exit(1)
 	}
@@ -45,6 +56,12 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
+	rootCmd.SuggestionsMinimumDistance = 1
+	rootCmd.SilenceUsage = true
+	rootCmd.SilenceErrors = true
+	rootCmd.TraverseChildren = true
+	rootCmd.SuggestionsMinimumDistance = 2
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/skm/config.yaml)")
 	rootCmd.PersistentFlags().BoolVar(&debugMode, "debug", false, "enable debug mode with detailed error messages")
@@ -56,7 +73,7 @@ func initConfig() {
 	var err error
 	configManager, err = config.NewManager(cfgFile)
 	if err != nil {
-		PrintError(fmt.Errorf("Error initializing config: %w", err))
+		PrintError(fmt.Errorf("error initializing config: %w", err))
 		os.Exit(1)
 	}
 
@@ -114,7 +131,7 @@ func checkRotation() {
 
 	cfg := configManager.Get()
 	checker := rotation.NewRotationChecker(cfg.KeyRotationPolicy)
-	
+
 	expiredCount := 0
 	warningCount := 0
 

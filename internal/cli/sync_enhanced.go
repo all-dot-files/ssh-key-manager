@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+
 	"github.com/all-dot-files/ssh-key-manager/internal/sync"
 )
 

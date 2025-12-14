@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+
 	"github.com/all-dot-files/ssh-key-manager/internal/api"
 	"github.com/all-dot-files/ssh-key-manager/internal/keystore"
 	"github.com/all-dot-files/ssh-key-manager/internal/models"
@@ -173,7 +174,7 @@ var syncPullCmd = &cobra.Command{
 
 			// Create new key entry
 			fmt.Printf("  Importing key: %s\n", remoteKey.Name)
-			
+
 			// Write public key to file
 			pubPath := filepath.Join(cfg.KeystorePath, remoteKey.Name+".pub")
 			if err := os.WriteFile(pubPath, []byte(remoteKey.PublicKey), 0644); err != nil {
@@ -212,7 +213,7 @@ var syncPullCmd = &cobra.Command{
 
 			for _, remoteKey := range privateKeys {
 				fmt.Printf("Processing private key: %s\n", remoteKey.Name)
-				
+
 				// Check if we have this key in config
 				key, err := configManager.GetKey(remoteKey.Name)
 				if err != nil {
@@ -238,29 +239,29 @@ var syncPullCmd = &cobra.Command{
 				// But wait, the server stores them encrypted with the *user's* password (or a sync password).
 				// If the local keystore expects them to be encrypted with the *same* passphrase, we can just save them.
 				// But if the server encryption is different from local storage encryption, we need to re-encrypt.
-				
+
 				// Assumption: Server stores keys encrypted with a transport/sync password (or user's password).
 				// Local keystore stores keys encrypted with the key's own passphrase.
 				// If they are the same, we can just write the content.
-				// Let's assume for now we just write the encrypted content directly, 
+				// Let's assume for now we just write the encrypted content directly,
 				// implying the user used the same passphrase for sync as for the key itself.
-				
+
 				// Actually, looking at the Push logic:
 				// privKeyData, err := os.ReadFile(key.Path)
 				// EncryptedPrivate: string(privKeyData)
 				// It sends the raw file content. So it's already encrypted with the key's passphrase.
 				// So we just need to write it back to disk.
-				
+
 				if err := os.WriteFile(key.Path, []byte(remoteKey.EncryptedPrivate), 0600); err != nil {
 					fmt.Fprintf(os.Stderr, "  Failed to write private key: %v\n", err)
 					continue
 				}
-				
+
 				// Update key status
 				key.HasPassphrase = true // We assume it has one if it was encrypted, or we check metadata
 				// Actually we should probably check if it's really encrypted or just PEM
 				// But for now let's assume it's fine.
-				
+
 				fmt.Printf("  ✓ Private key saved\n")
 			}
 		}

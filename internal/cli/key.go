@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+
 	"github.com/all-dot-files/ssh-key-manager/internal/keystore"
 	"github.com/all-dot-files/ssh-key-manager/internal/models"
 	"github.com/all-dot-files/ssh-key-manager/internal/rotation"
@@ -225,6 +226,17 @@ var keyDeleteCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		name := args[0]
+
+		force, _ := cmd.Flags().GetBool("force")
+		if !force {
+			fmt.Fprintf(cmd.OutOrStdout(), "This will delete key files and remove the config entry for %s.\n", name)
+			fmt.Fprint(cmd.OutOrStdout(), "Type the key name to confirm or 'no' to cancel: ")
+			var response string
+			_, _ = fmt.Fscanln(cmd.InOrStdin(), &response)
+			if response != name {
+				return fmt.Errorf("delete cancelled; rerun with --force to skip confirmation")
+			}
+		}
 
 		key, err := configManager.GetKey(name)
 		if err != nil {
@@ -456,6 +468,7 @@ func init() {
 	// Delete command
 	keyCmd.AddCommand(keyDeleteCmd)
 	keyDeleteCmd.ValidArgsFunction = ValidKeyNamesFunc
+	keyDeleteCmd.Flags().BoolP("force", "f", false, "Delete without interactive confirmation")
 
 	// Rotation commands
 	keyCmd.AddCommand(keyRotationStatusCmd)

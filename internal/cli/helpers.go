@@ -20,7 +20,7 @@ func HandleError(err error) {
 		} else {
 			fmt.Fprintf(os.Stderr, "❌ Error: %s\n", appErr.Message)
 		}
-		
+
 		// Print suggestion if available
 		if appErr.Suggestion != "" {
 			fmt.Fprintf(os.Stderr, "\n💡 Suggestion: %s\n", appErr.Suggestion)
@@ -69,4 +69,3 @@ func Info(format string, args ...interface{}) {
 func Warning(format string, args ...interface{}) {
 	fmt.Fprintf(os.Stderr, "⚠️  "+format+"\n", args...)
 }
-
